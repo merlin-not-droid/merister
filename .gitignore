@@ -1,4 +1,8 @@
 weights/*.pt
+weights/*.ts
 __pycache__/
 *.pyc
 runs/videos/*.mp4
+runs/yolo11/*.mp4
+# Broadcast footage supplied by the user; not redistributed.
+data/videos/game.mp4

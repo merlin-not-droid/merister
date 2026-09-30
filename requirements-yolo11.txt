@@ -1,0 +1,5 @@
+ultralytics>=8.3.0
+opencv-python-headless>=4.5
+lap>=0.5.12  # ByteTrack assignment
+# YOLOE text prompts also need CLIP; ultralytics installs it automatically on first use:
+#   pip install git+https://github.com/ultralytics/CLIP.git
