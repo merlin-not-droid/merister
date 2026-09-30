@@ -1,0 +1,4 @@
+yolov5==7.0.14
+torch>=1.8
+opencv-python-headless>=4.5
+setuptools<81  # yolov5 7.0.x still imports pkg_resources

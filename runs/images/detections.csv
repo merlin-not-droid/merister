@@ -1,0 +1,7 @@
+source,frame,label,conf,x1,y1,x2,y2
+sample_image.jpg,0,player,0.8612,322,474,510,989
+sample_image.jpg,0,ball,0.6421,665,216,716,264
+sample_image2.jpg,0,player,0.8764,301,512,470,1000
+sample_image2.jpg,0,ball,0.2185,922,140,969,189
+sample_image3.jpg,0,player,0.8678,543,152,727,884
+sample_image3.jpg,0,ball,0.2466,248,498,294,552

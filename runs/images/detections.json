@@ -1,0 +1,62 @@
+[
+ {
+  "source": "sample_image.jpg",
+  "frame": 0,
+  "label": "player",
+  "conf": 0.8612,
+  "x1": 322,
+  "y1": 474,
+  "x2": 510,
+  "y2": 989
+ },
+ {
+  "source": "sample_image.jpg",
+  "frame": 0,
+  "label": "ball",
+  "conf": 0.6421,
+  "x1": 665,
+  "y1": 216,
+  "x2": 716,
+  "y2": 264
+ },
+ {
+  "source": "sample_image2.jpg",
+  "frame": 0,
+  "label": "player",
+  "conf": 0.8764,
+  "x1": 301,
+  "y1": 512,
+  "x2": 470,
+  "y2": 1000
+ },
+ {
+  "source": "sample_image2.jpg",
+  "frame": 0,
+  "label": "ball",
+  "conf": 0.2185,
+  "x1": 922,
+  "y1": 140,
+  "x2": 969,
+  "y2": 189
+ },
+ {
+  "source": "sample_image3.jpg",
+  "frame": 0,
+  "label": "player",
+  "conf": 0.8678,
+  "x1": 543,
+  "y1": 152,
+  "x2": 727,
+  "y2": 884
+ },
+ {
+  "source": "sample_image3.jpg",
+  "frame": 0,
+  "label": "ball",
+  "conf": 0.2466,
+  "x1": 248,
+  "y1": 498,
+  "x2": 294,
+  "y2": 552
+ }
+]
