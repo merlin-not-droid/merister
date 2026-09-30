@@ -27,7 +27,7 @@ python detect_basketball.py --source data/videos/sample_video.mp4 --out runs/vid
 | 입력 | 결과 |
 |---|---|
 | `sample_image.jpg` | player 1 (0.86), ball 1 (0.64) |
-| `sample_image2.jpg` | player 1 (0.92), ball 1 (0.24) |
+| `sample_image2.jpg` | player 1 (0.88), ball 1 (0.22) |
 | `sample_image3.jpg` | player 1 (0.87), ball 1 (0.25) — 두 번째 공(화면 위쪽)은 놓침 |
 | `sample_video.mp4` (960×540, 101프레임) | 모든 프레임에서 선수 탐지, 공은 43% 프레임에서 탐지 · 약 10초 |
 
