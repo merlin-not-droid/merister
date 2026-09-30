@@ -1,0 +1,16 @@
+{
+ "source": "data/videos/game.mp4",
+ "weights": "yoloe-11l-seg.pt",
+ "frames": 198,
+ "fps": 30.0,
+ "seconds": 206.8,
+ "frames_with_players": 171,
+ "avg_players_per_frame": 7.76,
+ "unique_player_tracks": 23,
+ "frames_with_ball_detected": 102,
+ "frames_with_ball_incl_interpolated": 138,
+ "teams": {
+  "team A": 11,
+  "team B": 11
+ }
+}
