@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko" data-direction="a">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Meister — 스포츠의 감동을 브랜드의 경험으로</title>
+    <meta name="description" content="Meister는 스포츠 스폰서십, 스포츠 이벤트, 선수 매니지먼트를 기획하고 실행하는 스포츠 마케팅 에이전시입니다." />
+    <meta name="theme-color" content="#0b0d0b" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Meister" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:title" content="Meister — 스포츠의 감동을 브랜드의 경험으로" />
+    <meta property="og:description" content="Meister는 스포츠 스폰서십, 스포츠 이벤트, 선수 매니지먼트를 기획하고 실행하는 스포츠 마케팅 에이전시입니다." />
+    <meta property="og:image" content="%BASE_URL%og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!--app-head-->
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <script>
+      // 첫 페인트 전에 JS 사용 여부와 디자인 방향을 적용해 깜빡임을 막습니다.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        try {
+          var q = new URLSearchParams(location.search).get('direction');
+          var s = q || localStorage.getItem('meister-direction');
+          if (s === 'a' || s === 'b' || s === 'c') {
+            d.dataset.direction = s;
+            if (q) localStorage.setItem('meister-direction', s);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"><!--app-html--></div>
+    <noscript><style>.reveal,.split__i,.hero__fade{opacity:1!important;transform:none!important}</style></noscript>
+    <script type="module" src="/src/entry-client.tsx"></script>
+  </body>
+</html>

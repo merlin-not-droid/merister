@@ -1,0 +1,164 @@
+/* ==========================================================================
+   Design tokens — 3 design directions × 2 surfaces
+   방향(direction)은 <html data-direction="a|b|c"> 로 전환합니다.
+   각 섹션은 .surface-ink / .surface-paper 중 하나를 선택하고,
+   컴포넌트는 --bg / --text / --line / --accent-text 같은 '역할' 변수만 사용합니다.
+   ========================================================================== */
+
+:root,
+[data-direction='a'] {
+  /* A — Floodlight: 야간 경기장의 조명 아래 선명해지는 순간 */
+  --ink: #0b0d0b;
+  --ink-rgb: 11, 13, 11;
+  --ink-2: #131613;
+  --ink-3: #1d211d;
+  --paper: #f1f1eb;
+  --paper-rgb: 241, 241, 235;
+  --paper-2: #e6e6dd;
+  --paper-3: #d9d9cf;
+  --accent: #c6ff33;
+  --accent-rgb: 198, 255, 51;
+  --accent-contrast: #0b0d0b;
+  --accent-on-paper: #3d5a00;
+  --signal: #ff5b2e;
+
+  --font-display: 'Archivo Variable', 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  --display-weight: 800;
+  --display-stretch: 72%;
+  --display-transform: uppercase;
+  --display-tracking: -0.01em;
+  --display-style: normal;
+  --display-italic: normal;
+  --display-scale: 1;
+  --display-scale-sm: 1;
+  --radius: 4px;
+  --radius-lg: 10px;
+}
+
+[data-direction='b'] {
+  /* B — Matchday Paper: 경기 프로그램북과 전술 노트 같은 에디토리얼 */
+  --ink: #0f2a20;
+  --ink-rgb: 15, 42, 32;
+  --ink-2: #143327;
+  --ink-3: #1b3f31;
+  --paper: #f3efe6;
+  --paper-rgb: 243, 239, 230;
+  --paper-2: #e9e3d6;
+  --paper-3: #ddd5c4;
+  --accent: #ff5b1f;
+  --accent-rgb: 255, 91, 31;
+  --accent-contrast: #0f2a20;
+  --accent-on-paper: #b83d0b;
+  --signal: #ff5b1f;
+
+  --font-display: 'Instrument Serif', 'Pretendard Variable', Pretendard, Georgia, serif;
+  --display-weight: 400;
+  --display-stretch: 100%;
+  --display-transform: none;
+  --display-tracking: -0.015em;
+  --display-style: normal;
+  --display-italic: italic;
+  --display-scale: 1.08;
+  --display-scale-sm: 1.08;
+  --radius: 2px;
+  --radius-lg: 4px;
+}
+
+[data-direction='c'] {
+  /* C — Club Navy: 전통 있는 클럽의 신뢰감, 'Meister(장인)'의 골드 */
+  --ink: #0a1430;
+  --ink-rgb: 10, 20, 48;
+  --ink-2: #0f1c3d;
+  --ink-3: #17264d;
+  --paper: #f4f6fa;
+  --paper-rgb: 244, 246, 250;
+  --paper-2: #e8ecf3;
+  --paper-3: #d8dfea;
+  --accent: #e9c25b;
+  --accent-rgb: 233, 194, 91;
+  --accent-contrast: #0a1430;
+  --accent-on-paper: #7f5c0b;
+  --signal: #e9c25b;
+
+  --font-display: 'Unbounded Variable', 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  --display-weight: 600;
+  --display-stretch: 100%;
+  --display-transform: uppercase;
+  --display-tracking: -0.02em;
+  --display-style: normal;
+  --display-italic: normal;
+  --display-scale: 0.6;
+  --display-scale-sm: 0.76;
+  --radius: 999px;
+  --radius-lg: 18px;
+}
+
+:root {
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR',
+    system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --success: #2fbf71;
+  --error: #ff4d4f;
+  --error-on-paper: #c4161c;
+
+  /* Type scale */
+  --fs-hero: clamp(2.6rem, 1.1rem + 6.2vw, 7.25rem);
+  --fs-display: clamp(3.2rem, 0.8rem + 10vw, 11rem);
+  --fs-h1: clamp(2.4rem, 1.3rem + 4.4vw, 5.25rem);
+  --fs-h2: clamp(1.9rem, 1.2rem + 2.8vw, 3.75rem);
+  --fs-h3: clamp(1.2rem, 1.05rem + 0.6vw, 1.6rem);
+  --fs-lead: clamp(1.0625rem, 0.98rem + 0.4vw, 1.3rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.75rem;
+
+  /* Space */
+  --gutter: clamp(1rem, 0.5rem + 2.4vw, 2.5rem);
+  --section-y: clamp(5rem, 3rem + 8vw, 10rem);
+  --container: 1360px;
+  --container-narrow: 860px;
+  --header-h: 72px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur: 420ms;
+  --dur-slow: 900ms;
+}
+
+/* ---------- Surfaces ---------- */
+.surface-ink {
+  --bg: var(--ink);
+  --bg-rgb: var(--ink-rgb);
+  --bg-2: var(--ink-2);
+  --bg-3: var(--ink-3);
+  --text: var(--paper);
+  --text-rgb: var(--paper-rgb);
+  --text-2: rgba(var(--paper-rgb), 0.74);
+  --text-3: rgba(var(--paper-rgb), 0.52);
+  --line: rgba(var(--paper-rgb), 0.14);
+  --line-strong: rgba(var(--paper-rgb), 0.32);
+  --accent-text: var(--accent);
+  --error-text: var(--error);
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.surface-paper {
+  --bg: var(--paper);
+  --bg-rgb: var(--paper-rgb);
+  --bg-2: var(--paper-2);
+  --bg-3: var(--paper-3);
+  --text: var(--ink);
+  --text-rgb: var(--ink-rgb);
+  --text-2: rgba(var(--ink-rgb), 0.76);
+  --text-3: rgba(var(--ink-rgb), 0.56);
+  --line: rgba(var(--ink-rgb), 0.14);
+  --line-strong: rgba(var(--ink-rgb), 0.34);
+  --accent-text: var(--accent-on-paper);
+  --error-text: var(--error-on-paper);
+  background-color: var(--bg);
+  color: var(--text);
+}
