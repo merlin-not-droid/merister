@@ -17,7 +17,7 @@ npm run preview    # 빌드 결과 확인 http://localhost:4173/merister/
 
 ## 배포 (GitHub Pages)
 
-1. 저장소 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 바꿉니다.
+1. 저장소 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 바꿉니다. (이 설정 전에는 빌드만 검증되고 배포 단계가 실패합니다. 설정 후 Actions 탭에서 워크플로를 다시 실행하세요)
 2. `main` 또는 `claude/meister-homepage-planning-mlx3gx` 브랜치에 `meister/` 변경을 push하면 `.github/workflows/meister-pages.yml`이 빌드·배포합니다. Actions 탭에서 수동 실행(`workflow_dispatch`)도 가능합니다.
 3. `github-pages` 환경에 배포 브랜치 제한이 걸려 있으면 **Settings → Environments → github-pages**에서 해당 브랜치를 허용합니다.
 4. 주소: `https://merlin-not-droid.github.io/merister/` (커스텀 도메인을 연결하면 경로가 자동으로 `/`로 바뀝니다)

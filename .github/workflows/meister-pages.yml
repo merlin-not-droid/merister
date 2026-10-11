@@ -34,9 +34,23 @@ jobs:
           cache: npm
           cache-dependency-path: meister/package-lock.json
 
+      # Pages 가 아직 켜져 있지 않아도 빌드 검증은 진행되도록 실패를 허용합니다.
+      # (배포 단계는 Settings → Pages → Source: GitHub Actions 설정 후 성공합니다)
       - name: Configure Pages
         id: pages
+        continue-on-error: true
         uses: actions/configure-pages@v5
+
+      - name: Resolve base path
+        id: paths
+        run: |
+          if [ "${{ steps.pages.outcome }}" = "success" ]; then
+            echo "base=${{ steps.pages.outputs.base_path }}/" >> "$GITHUB_OUTPUT"
+            echo "url=${{ steps.pages.outputs.base_url }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "base=/${{ github.event.repository.name }}/" >> "$GITHUB_OUTPUT"
+            echo "url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Install
         run: npm ci
@@ -44,8 +58,8 @@ jobs:
       - name: Build (typecheck + prerender)
         env:
           # 프로젝트 페이지(/merister/) 또는 커스텀 도메인(/)에 맞춰 자동으로 설정됩니다.
-          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
-          SITE_URL: ${{ steps.pages.outputs.base_url }}
+          BASE_PATH: ${{ steps.paths.outputs.base }}
+          SITE_URL: ${{ steps.paths.outputs.url }}
           # 저장소 Settings → Secrets and variables → Actions → Variables 에서 설정
           VITE_FORM_ENDPOINT: ${{ vars.VITE_FORM_ENDPOINT }}
           VITE_SHOW_DIRECTION_SWITCHER: ${{ vars.VITE_SHOW_DIRECTION_SWITCHER || 'true' }}
