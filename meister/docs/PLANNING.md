@@ -234,9 +234,9 @@
 
 | 기능 | 화면 구현 (완료) | 실제 작동에 필요한 설정 (운영자) |
 |---|---|---|
-| 문의 폼 | 필수 입력 확인, 이메일 형식 검사, 오류 요약·포커스 이동, 전송 중 상태, 결과 화면, 스팸 방지 숨은 필드, 서비스 자동 선택(`?service=`) | 폼 수신 서비스 가입 → 엔드포인트 URL을 저장소 Variables의 `VITE_FORM_ENDPOINT`에 등록. 미설정 시 ‘데모 모드’로 동작(전송하지 않고 메일 앱 열기 안내) |
+| 문의 폼 | 필수 입력 확인, 이메일 형식 검사, 오류 요약·포커스 이동, 전송 중 상태, 결과 화면, 스팸 방지 숨은 필드, 서비스 자동 선택(`?service=`) | 폼 수신 서비스 가입 → 엔드포인트 URL을 `meister/.env.local`의 `VITE_FORM_ENDPOINT`에 넣고 `npm run build:docs`. 미설정 시 ‘데모 모드’로 동작(전송하지 않고 메일 앱 열기 안내) |
 | 이메일·SNS | 값이 없으면 [자료 필요] 표시 | `src/content/site.ts`에 주소 입력 |
-| 배포 | GitHub Actions 워크플로(`.github/workflows/meister-pages.yml`) | 저장소 Settings → Pages → Source를 **GitHub Actions**로 변경. 배포 브랜치 제한이 있으면 Environments → github-pages에 브랜치 허용 |
+| 배포 | `npm run build:docs`로 저장소 루트 `docs/`에 빌드 결과 생성 | Settings → Pages → **Deploy from a branch**, 브랜치 선택 후 폴더 **`/docs`** 저장 |
 | 검색 노출 | 페이지별 title/description, OG 이미지, canonical, sitemap.xml, robots.txt, 구조화 데이터(Organization), 전 페이지 프리렌더(HTML에 본문 포함) | Google Search Console·네이버 서치어드바이저에 사이트 등록 후 sitemap 제출. 커스텀 도메인 사용 시 robots.txt가 도메인 루트에 위치 |
 | 접근성 | 본문 바로가기, 키보드 탭 이동, 포커스 표시, 탭 패널 화살표 키, 메뉴 포커스 가두기·Esc, 폼 오류 연결(aria-describedby), 모션 최소화 대응, 44px 이상 터치 영역 | 실제 사진 추가 시 대체 텍스트 작성 |
 | 성능 | 폰트 자체 호스팅·한글 동적 서브셋, 라이브러리 청크 분리, WebGL 화면 밖 정지, 모바일 해상도 하향 | 사진은 WebP/AVIF, 가로 1600px 이하, 200KB 내외로 최적화 후 추가 |

@@ -1,0 +1,37 @@
+name: Meister site build check
+
+# 배포는 GitHub Pages "Deploy from a branch → /docs" 로 합니다.
+# 이 워크플로는 meister/ 변경이 타입 검사·빌드·프리렌더를 통과하는지만 확인합니다.
+on:
+  push:
+    paths:
+      - 'meister/**'
+      - '.github/workflows/meister-build.yml'
+  pull_request:
+    paths:
+      - 'meister/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: meister
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: meister/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build (typecheck + prerender)
+        run: npm run build

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://merlin-not-droid.github.io/merister/sitemap.xml

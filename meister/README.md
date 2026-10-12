@@ -12,24 +12,39 @@ cd meister
 npm install
 npm run dev        # 개발 서버 http://localhost:5173/merister/
 npm run build      # 타입 검사 → 빌드 → 프리렌더(dist/)
+npm run build:docs # 위 빌드 후 저장소 루트 docs/ 로 복사 (배포용)
 npm run preview    # 빌드 결과 확인 http://localhost:4173/merister/
 ```
 
-## 배포 (GitHub Pages)
+## 배포 (GitHub Pages — Deploy from a branch)
 
-1. 저장소 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 바꿉니다. (이 설정 전에는 빌드만 검증되고 배포 단계가 실패합니다. 설정 후 Actions 탭에서 워크플로를 다시 실행하세요)
-2. `main` 또는 `claude/meister-homepage-planning-mlx3gx` 브랜치에 `meister/` 변경을 push하면 `.github/workflows/meister-pages.yml`이 빌드·배포합니다. Actions 탭에서 수동 실행(`workflow_dispatch`)도 가능합니다.
-3. `github-pages` 환경에 배포 브랜치 제한이 걸려 있으면 **Settings → Environments → github-pages**에서 해당 브랜치를 허용합니다.
-4. 주소: `https://merlin-not-droid.github.io/merister/` (커스텀 도메인을 연결하면 경로가 자동으로 `/`로 바뀝니다)
+공개되는 파일은 저장소 루트의 **`docs/`** 폴더입니다. (`meister/`에서 빌드한 결과를 복사한 것)
 
-## 설정 (저장소 Settings → Secrets and variables → Actions → Variables)
+1. 사이트를 고친 뒤 빌드 결과를 `docs/`에 반영합니다.
+   ```bash
+   cd meister
+   npm run build:docs   # 빌드 → 프리렌더 → ../docs 로 복사
+   cd ..
+   git add docs meister && git commit -m "Update site" && git push
+   ```
+2. 처음 한 번만: 저장소 **Settings → Pages → Build and deployment**
+   - Source: **Deploy from a branch**
+   - Branch: **`claude/meister-homepage-planning-mlx3gx`**, 폴더: **`/docs`** → **Save**
+3. 1–2분 뒤 `https://merlin-not-droid.github.io/merister/` 에 반영됩니다.
+
+- GitHub Pages의 브랜치 배포는 폴더를 `/ (root)` 또는 `/docs`만 고를 수 있습니다. 저장소 루트에는 다른 프로젝트가 있으므로 `/docs`를 씁니다.
+- 나중에 기본 브랜치(`main` 등)로 합치면 Branch 설정만 그 브랜치로 바꾸면 됩니다.
+- 커스텀 도메인을 쓰면 `BASE_PATH=/ SITE_URL=https://도메인 npm run build:docs`로 빌드합니다.
+- `.github/workflows/meister-build.yml`은 배포하지 않고, push마다 빌드가 깨지지 않았는지만 검사합니다.
+
+## 설정 (빌드할 때 환경 변수)
 
 | 이름 | 설명 |
 |---|---|
 | `VITE_FORM_ENDPOINT` | 문의 폼을 받을 주소. Formspree·Web3Forms·Getform 등 JSON POST를 받는 엔드포인트. 비워두면 데모 모드(전송하지 않고 결과 화면과 메일 앱 열기만 안내) |
 | `VITE_SHOW_DIRECTION_SWITCHER` | `false`로 설정하면 검토용 디자인 방향 전환 버튼을 숨깁니다 |
 
-로컬에서는 `.env.example`을 `.env.local`로 복사해 사용합니다.
+`meister/.env.example`을 `meister/.env.local`로 복사해 값을 넣은 뒤 `npm run build:docs`를 실행하면 빌드에 반영됩니다.
 
 ## 콘텐츠 수정
 
