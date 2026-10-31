@@ -9,6 +9,8 @@
      점수에 더하고 15초 넘는 무음(자리 비움 등)을 삭제 후보로 표시한다.
   5. 채팅은 사건보다 늦게 올라오므로 채팅이 늘기 시작한 지점 40초 전부터 잦아든 뒤 15초까지를
      후보 구간으로 잡는다.
+  6. --vod 가 OBS 녹화본이면 파일명의 녹화 시작 시각과 방송 시작 시각(liveOpenDate)의 차이만큼
+     시간을 옮겨서, 출력의 모든 시간과 프리미어 XML 을 녹화 파일 기준으로 맞춘다 (--offset 으로 직접 지정 가능).
 
 출력 (기본 폴더 highlights_<영상 번호>/)
   highlights.md, highlights.csv   후보 구간 (점수순 · 시간순, 반응 종류, 추천 편집, 대표 채팅)
@@ -22,6 +24,7 @@
 사용 예:
   python chzzk_highlights.py https://chzzk.naver.com/video/15940407
   python chzzk_highlights.py 15940407 --vod D:/vod/15940407.mp4 --top 40
+  python chzzk_highlights.py 15940407 --vod "C:\\Users\\me\\Videos\\2026-10-30 23-07-44.mp4"
 """
 
 import argparse
@@ -39,6 +42,7 @@ import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 
 API = "https://api.chzzk.naver.com/service"
@@ -83,6 +87,9 @@ def parse_args():
     p.add_argument("video", help="CHZZK video URL (https://chzzk.naver.com/video/<no>) or video number")
     p.add_argument("--vod", help="local VOD file: adds loudness / silence analysis (needs ffmpeg) "
                                  "and is linked in the Premiere XML")
+    p.add_argument("--offset", type=float,
+                   help="seconds the --vod file started after the stream went live (negative if earlier); "
+                        "default: estimated from an OBS file name such as '2026-10-30 23-07-44.mp4'")
     p.add_argument("--out", help="output directory (default: highlights_<video no>)")
     p.add_argument("--top", type=int, default=30, help="number of highlight candidates")
     p.add_argument("--pre", type=float, default=40,
@@ -274,6 +281,24 @@ def audio_levels(vod):
         print("ffmpeg 음량 분석에 실패해 건너뜁니다.", file=sys.stderr)
         return None
     return levels
+
+
+def estimate_offset(vod, info):
+    """OBS 기본 파일명(2026-10-30 23-07-44.mp4)의 녹화 시작이 방송 시작보다 몇 초 늦었는지. 모르면 None."""
+    m = re.search(r"(\d{4}-\d{2}-\d{2})[ _](\d{2})-(\d{2})-(\d{2})", Path(vod).stem)
+    try:
+        rec = datetime.strptime("{} {}:{}:{}".format(*m.groups()), "%Y-%m-%d %H:%M:%S")
+        live = datetime.strptime((info.get("liveOpenDate") or "")[:19], "%Y-%m-%d %H:%M:%S")
+    except (AttributeError, ValueError):   # OBS 파일명이 아니거나 방송 시작 시각이 없음
+        return None
+    diff = (rec - live).total_seconds()
+    return diff if abs(diff) <= 6 * 3600 else None   # 6시간 넘게 차이 나면 다른 방송의 녹화로 본다
+
+
+def to_chat_time(levels, offset, n_sec):
+    """녹화 파일 기준 1초 음량을 다시보기(채팅) 시간축으로 옮긴다. 녹화가 없는 구간은 중앙값으로 채운다."""
+    fill, shift = statistics.median(levels), int(round(offset))
+    return [levels[t - shift] if 0 <= t - shift < len(levels) else fill for t in range(n_sec)]
 
 
 # ---------------------------------------------------------------- analysis
@@ -572,21 +597,27 @@ def md_cell(s):
     return str(s).replace("|", "\\|").replace("\n", " ")
 
 
-def write_report(path, info, media, chats, cands, cuts, args, used_audio, video_no):
-    duration = media["duration"]
-    total = sum(w["end"] - w["start"] for w in cands)
+def write_report(path, info, media, chats, cands, cuts, args, used_audio, video_no, duration, offset, offset_note):
+    inside = [w for w in cands if w["inside"]]
+    total = sum(w["src_end"] - w["src_start"] for w in inside)
     need, cum = None, 0.0
-    for k, w in enumerate(cands, 1):
-        cum += w["end"] - w["start"]
+    for k, w in enumerate(inside, 1):
+        cum += w["src_end"] - w["src_start"]
         if need is None and cum >= 26 * 60:
             need = k
     dono = sum(1 for c in chats if c["type"] in DONATION_TYPES)
+    if args.vod:
+        basis = (f"- 시간 기준: 녹화 파일 `{media['name']}` ({fmt_time(media['duration'])}). "
+                 f"치지직 다시보기 시간 = 녹화 시간 {offset:+.0f}초 ({offset_note})")
+    else:
+        basis = "- 시간 기준: 치지직 다시보기"
     lines = [
         f"# 하이라이트 후보 — {info.get('videoTitle') or video_no}", "",
         f"- 영상: https://chzzk.naver.com/video/{video_no}",
         f"- 채널: {info.get('channelName') or '-'} · 카테고리: {info.get('videoCategoryValue') or '-'} · "
         f"방송 시작: {info.get('liveOpenDate') or info.get('publishDate') or '-'}",
         f"- 길이: {fmt_time(duration)} · 채팅 {len(chats):,}개 · 후원/구독 {dono:,}건",
+        basis,
         f"- 방법: 5초 단위 채팅(반응 가중)을 앞뒤 5분 중앙값과 비교해 점수 {args.min_z:g} 이상, "
         f"피크 간격 {args.min_gap:.0f}초 이상" + (" · 채팅 직전 30초 안의 큰 소리 가산" if used_audio else ""),
         f"- 구간: 채팅이 늘기 시작한 지점 {args.pre:.0f}초 전 ~ 잦아든 뒤 {args.post:.0f}초 "
@@ -601,21 +632,28 @@ def write_report(path, info, media, chats, cands, cuts, args, used_audio, video_
                   "-c:a aac -b:a 320k 원본_cfr.mp4`", ""]
     budget = (f"점수순 상위 **{need}개** 분량." if need else
               "후보를 다 써도 모자라므로 `--min-z 1.5` 처럼 기준을 낮추거나, 후보 사이의 흐름 구간을 직접 더하세요.")
-    lines += [f"후보 {len(cands)}개, 합계 {fmt_dur(total)}. 파인컷(점프컷·공백 삭제)에서 보통 20~30%가 더 줄어들므로 "
+    outside = len(cands) - len(inside)
+    lines += [f"후보 {len(inside)}개" + (f" (녹화 파일 밖 {outside}개 제외)" if outside else "")
+              + f", 합계 {fmt_dur(total)}. 파인컷(점프컷·공백 삭제)에서 보통 20~30%가 더 줄어들므로 "
               f"20분 영상에는 원본 약 26분이 필요합니다 → {budget}", "",
               "## 점수순", "",
               "| # | 원본 구간 | 길이 | 반응 시작 | 반응 | 점수 | 추천 편집 | 대표 채팅 |",
               "|---|---|---|---|---|---|---|---|"]
     for w in cands:
-        lines.append(f"| {w['rank']} | {fmt_time(w['start'])}–{fmt_time(w['end'])} | {fmt_dur(w['end'] - w['start'])} "
-                     f"| {fmt_time(w['onset'])} | {w['kind']} | {w['score']:.1f} | {w['treatment']} "
+        if w["inside"]:
+            span = (f"{fmt_time(w['src_start'])}–{fmt_time(w['src_end'])} | {fmt_dur(w['src_end'] - w['src_start'])} "
+                    f"| {fmt_time(max(0.0, w['src_onset']))}")
+        else:
+            span = f"녹화 파일 밖 (다시보기 {fmt_time(w['start'])}) | - | -"
+        lines.append(f"| {w['rank']} | {span} | {w['kind']} | {w['score']:.1f} | {w['treatment']} "
                      f"| {md_cell(w['samples'])} |")
     lines += ["", "## 시간순 (premiere_selects.xml 순서)", "",
               "| 순서 | # | 원본 구간 | 셀렉트 시퀀스 위치 | 반응 |", "|---|---|---|---|---|"]
     pos = 0.0
-    for k, w in enumerate(sorted(cands, key=lambda w: w["start"]), 1):
-        lines.append(f"| {k} | {w['rank']} | {fmt_time(w['start'])}–{fmt_time(w['end'])} | {fmt_time(pos)} | {w['kind']} |")
-        pos += w["end"] - w["start"]
+    for k, w in enumerate(sorted(inside, key=lambda w: w["src_start"]), 1):
+        lines.append(f"| {k} | {w['rank']} | {fmt_time(w['src_start'])}–{fmt_time(w['src_end'])} | {fmt_time(pos)} "
+                     f"| {w['kind']} |")
+        pos += w["src_end"] - w["src_start"]
     lines += ["", "## 삭제 후보", ""]
     if cuts:
         lines += ["| 원본 구간 | 길이 | 이유 |", "|---|---|---|"]
@@ -625,9 +663,11 @@ def write_report(path, info, media, chats, cands, cuts, args, used_audio, video_
     lines += ["", "## 프리미어에서 열기", "",
               "1. 파일 > 가져오기(Ctrl+I) 로 `premiere_selects.xml`(후보만 이어 붙인 시퀀스)과 "
               "`premiere_markers.xml`(원본 전체 + 마커)을 불러옵니다.",
-              "2. 미디어 연결 창이 뜨면 원본 VOD 파일을 지정합니다 (--vod 로 만든 경우 자동 연결).",
+              "2. 미디어 연결 창이 뜨면 원본 파일을 지정합니다 (--vod 로 만든 경우 자동 연결).",
               "3. 셀렉트 시퀀스의 마커(반응 시작 위치)는 Shift+M / Ctrl+Shift+M 으로 이동하며 확인합니다.",
-              "4. 점수만 믿지 말고 각 구간을 직접 보고 남길지 정합니다 — 채팅이 적어도 재밌는 장면, "
+              "4. 모든 후보가 일정하게 앞이나 뒤로 밀려 있으면 녹화 파일과 다시보기의 시작 시각이 다른 것입니다. "
+              "다시보기에서 한 장면의 시각 A, 녹화 파일에서 같은 장면의 시각 B를 재서 `--offset (A−B 초)` 로 다시 실행하세요.",
+              "5. 점수만 믿지 말고 각 구간을 직접 보고 남길지 정합니다 — 채팅이 적어도 재밌는 장면, "
               "채팅은 많아도 맥락 없인 못 쓰는 장면이 있습니다.", ""]
     Path(path).write_text("\n".join(lines), encoding="utf-8")
 
@@ -657,17 +697,34 @@ def main():
     print(f"{info.get('videoTitle')} · {info.get('channelName')} · {fmt_time(info.get('duration') or 0)}",
           file=sys.stderr)
 
-    media = probe_media(args.vod, args, float(info.get("duration") or 0))
-    chats = load_or_fetch_chats(out, video_no, args.cookies, media["duration"], args.refresh)
+    api_duration = float(info.get("duration") or 0)
+    chats = load_or_fetch_chats(out, video_no, args.cookies, api_duration, args.refresh)
     if not chats:
         raise SystemExit("채팅 리플레이가 비어 있습니다 (채팅 다시보기가 꺼진 영상일 수 있음).")
-    if not media["duration"]:
-        media["duration"] = chats[-1]["t"] + 1
-    duration = media["duration"]
+    duration = api_duration or chats[-1]["t"] + 1      # 다시보기(채팅) 시간축
+    media = probe_media(args.vod, args, duration)     # 편집할 원본 (--vod 가 없으면 다시보기 자체)
+    # 녹화 파일 시간 = 다시보기 시간 - offset
+    offset, offset_note = 0.0, ""
+    if args.vod:
+        vod = Path(args.vod).resolve()
+        media.update(name=vod.name, url=vod.as_uri())
+        if args.offset is not None:
+            offset, offset_note = args.offset, "--offset 지정"
+        else:
+            est = estimate_offset(vod, info)
+            if est is None:
+                offset_note = "녹화 시작 시각을 알 수 없어 같은 시각에 시작했다고 가정"
+            else:
+                offset, offset_note = est, "파일명의 녹화 시각과 방송 시작 시각으로 추정"
+        print(f"시간 맞춤: 다시보기 시간 = 녹화 시간 {offset:+.0f}초 ({offset_note})", file=sys.stderr)
+    else:
+        media.update(name=f"{video_no}.mp4", url=f"file://localhost/{video_no}.mp4")
 
     tl = build_timeline(chats, duration)
     score = list(tl["z"])
     levels = audio_levels(args.vod) if args.vod else None
+    if levels:
+        levels = to_chat_time(levels, offset, tl["n"] * BIN)
     loud, loud_z = audio_timeline(levels, tl["n"]) if levels else ([None] * tl["n"], [None] * tl["n"])
     if levels:
         for i in range(tl["n"]):
@@ -676,48 +733,55 @@ def main():
     times = [c["t"] for c in chats]
     for w in cands:
         describe(w, tl, chats, times)
+        w["src_start"] = max(0.0, w["start"] - offset)
+        w["src_end"] = min(media["duration"], w["end"] - offset)
+        w["src_onset"] = w["onset"] - offset
+        w["inside"] = w["src_end"] - w["src_start"] >= 5
     cuts = find_cuts(tl, levels, duration)
+    src_cuts = [(max(0.0, a - offset), min(media["duration"], b - offset), why) for a, b, why in cuts]
+    src_cuts = [(a, b, why) for a, b, why in src_cuts if b - a >= 5]
 
     write_csv(out / "highlights.csv",
               ["rank", "start", "end", "length_s", "chat_onset", "peak", "kind", "score", "treatment", "chats_35s",
-               "sample_chats"],
-              [[w["rank"], fmt_time(w["start"]), fmt_time(w["end"]), round(w["end"] - w["start"]),
-                fmt_time(w["onset"]), fmt_time(w["peak"]), w["kind"], round(w["score"], 2), w["treatment"],
-                w["chats"], w["samples"]] for w in cands])
+               "sample_chats", "chzzk_start", "in_file"],
+              [[w["rank"]]
+               + ([fmt_time(w["src_start"]), fmt_time(w["src_end"]), round(w["src_end"] - w["src_start"]),
+                   fmt_time(max(0.0, w["src_onset"])), fmt_time(max(0.0, w["peak"] - offset))]
+                  if w["inside"] else [""] * 5)
+               + [w["kind"], round(w["score"], 2), w["treatment"], w["chats"], w["samples"], fmt_time(w["start"]),
+                  "yes" if w["inside"] else "no"] for w in cands])
     write_csv(out / "cut_candidates.csv", ["start", "end", "length_s", "reason"],
-              [[fmt_time(a), fmt_time(b), round(b - a), why] for a, b, why in cuts])
+              [[fmt_time(a), fmt_time(b), round(b - a), why] for a, b, why in src_cuts])
     write_csv(out / "timeline.csv",
-              ["t_s", "time", "chats"] + list(REACTIONS) + ["donations", "activity_15s", "baseline", "z",
-                                                            "loudness_db", "loudness_z", "score"],
-              [[i * BIN, fmt_time(i * BIN), tl["count"][i]] + [tl["react"][k][i] for k in REACTIONS]
+              ["t_s", "time", "file_time", "chats"] + list(REACTIONS)
+              + ["donations", "activity_15s", "baseline", "z", "loudness_db", "loudness_z", "score"],
+              [[i * BIN, fmt_time(i * BIN), fmt_time(i * BIN - offset) if i * BIN >= offset else "", tl["count"][i]]
+               + [tl["react"][k][i] for k in REACTIONS]
                + [tl["dono"][i], round(tl["smooth"][i], 1), round(tl["base"][i], 1), round(tl["z"][i], 2),
                   "" if loud[i] is None else round(loud[i], 1), "" if loud_z[i] is None else round(loud_z[i], 2),
                   round(score[i], 2)] for i in range(tl["n"])])
     write_svg(out / "chat_density.svg", tl, duration, cands, cuts)
-    write_report(out / "highlights.md", info, media, chats, cands, cuts, args, bool(levels), video_no)
+    write_report(out / "highlights.md", info, media, chats, cands, src_cuts, args, bool(levels), video_no,
+                 duration, offset, offset_note)
 
-    if args.vod:
-        vod = Path(args.vod).resolve()
-        media.update(name=vod.name, url=vod.as_uri())
-    else:
-        media.update(name=f"{video_no}.mp4", url=f"file://localhost/{video_no}.mp4")
-    chrono = sorted(cands, key=lambda w: w["start"])
-    write_sequence_xml(out / "premiere_markers.xml", f"{video_no}_원본_마커", media, [(0.0, duration)],
-                       [(w["start"], w["end"], f"#{w['rank']} {w['kind']} {w['score']:.1f}",
+    chrono = sorted((w for w in cands if w["inside"]), key=lambda w: w["src_start"])
+    write_sequence_xml(out / "premiere_markers.xml", f"{video_no}_원본_마커", media, [(0.0, media["duration"])],
+                       [(w["src_start"], w["src_end"], f"#{w['rank']} {w['kind']} {w['score']:.1f}",
                          f"{w['treatment']} | {w['samples']}") for w in chrono]
-                       + [(a, b, f"[삭제후보] {why}", "") for a, b, why in cuts])
+                       + [(a, b, f"[삭제후보] {why}", "") for a, b, why in src_cuts])
     sel_markers, pos = [], 0.0
     for w in chrono:
-        sel_markers.append((pos + w["onset"] - w["start"], None,
-                            f"#{w['rank']} {w['kind']} (원본 {fmt_time(w['start'])})",
+        sel_markers.append((pos + max(0.0, w["src_onset"] - w["src_start"]), None,
+                            f"#{w['rank']} {w['kind']} (원본 {fmt_time(w['src_start'])})",
                             f"채팅 반응 시작 — 실제 장면은 보통 5~20초 앞. {w['treatment']} | {w['samples']}"))
-        pos += w["end"] - w["start"]
+        pos += w["src_end"] - w["src_start"]
     write_sequence_xml(out / "premiere_selects.xml", f"{video_no}_하이라이트_셀렉트", media,
-                       [(w["start"], w["end"]) for w in chrono], sel_markers)
+                       [(w["src_start"], w["src_end"]) for w in chrono], sel_markers)
 
-    print(f"\n후보 {len(cands)}개 (합계 {fmt_dur(sum(w['end'] - w['start'] for w in cands))}) → {out}/highlights.md")
-    for w in cands[:10]:
-        print(f"  #{w['rank']:<3} {fmt_time(w['start'])}–{fmt_time(w['end'])}  {w['kind']:<3} "
+    print(f"\n후보 {len(chrono)}개 (합계 {fmt_dur(sum(w['src_end'] - w['src_start'] for w in chrono))}) "
+          f"→ {out}/highlights.md")
+    for w in [w for w in cands if w["inside"]][:10]:
+        print(f"  #{w['rank']:<3} {fmt_time(w['src_start'])}–{fmt_time(w['src_end'])}  {w['kind']:<3} "
               f"{w['score']:5.1f}  {w['samples'][:60]}")
 
 
