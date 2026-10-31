@@ -6,3 +6,5 @@ runs/videos/*.mp4
 runs/yolo11/*.mp4
 # Broadcast footage supplied by the user; not redistributed.
 data/videos/game.mp4
+# Raw CHZZK chat replay downloaded by stream_edit/chzzk_highlights.py (viewer messages)
+**/highlights_*/chat.jsonl
