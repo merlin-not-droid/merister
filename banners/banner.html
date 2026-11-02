@@ -2,63 +2,44 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>방구석 전문가 배너</title>
+<title>AC PRO 배너</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@500;700;900&family=Archivo+Black&family=JetBrains+Mono:wght@700&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Noto+Sans+KR:wght@500;700&display=block" rel="stylesheet">
 <style>
   :root{
-    --wall:#15213b; --wall2:#1d2d4f; --cream:#fff3dc; --mustard:#f4b840;
-    --orange:#ff6b35; --navy:#0f1a30; --red:#ff3b3b;
+    --bg:#f7f2ea; --ink:#2f3347; --ink2:#6b6f82;
+    --blue:#cfe0f3; --peach:#ffd9c7; --mint:#cdebdc; --lav:#dfd6f3; --butter:#fff0b8;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{background:var(--wall)}
-  #stage{position:relative;overflow:hidden;background:var(--wall)}
+  html,body{background:var(--bg)}
+  #stage{position:relative;overflow:hidden;background:var(--bg)}
   #bg{position:absolute;inset:0}
   .band{position:absolute}
-  .content{position:absolute;left:0;top:0;width:1546px;height:423px;transform-origin:0 0}
+  .content{position:absolute;left:0;top:0;width:1546px;height:423px;transform-origin:0 0;color:var(--ink)}
 
-  /* ---------- left: title ---------- */
-  .kicker{position:absolute;left:28px;top:52px;font:700 22px 'JetBrains Mono',monospace;
-    letter-spacing:.18em;color:var(--mustard);display:flex;align-items:center;gap:14px}
-  .kicker i{width:12px;height:12px;border-radius:50%;background:var(--orange);display:block;
-    box-shadow:0 0 0 5px rgba(255,107,53,.22)}
-  .title{position:absolute;left:20px;top:92px;font:400 158px/1 'Black Han Sans',sans-serif;
-    color:var(--cream);letter-spacing:-.01em;white-space:nowrap}
-  .title .hl{position:relative;display:inline-block}
-  .title .hl::before{content:"";position:absolute;left:-6px;right:-10px;bottom:10px;height:44px;
-    background:var(--orange);opacity:.9;z-index:-1;transform:rotate(-1.2deg);border-radius:6px 14px 8px 18px}
-  .title .hl{z-index:0}
-  .self{position:absolute;left:846px;top:96px;font:400 54px 'Nanum Pen Script',cursive;
-    color:var(--mustard);transform:rotate(-10deg);white-space:nowrap}
-  .tag{position:absolute;left:28px;top:290px;font:700 36px 'Noto Sans KR',sans-serif;
-    color:rgba(255,243,220,.92);letter-spacing:-.01em;white-space:nowrap}
-  .tag b{color:var(--mustard);font-weight:900}
-  .sub{position:absolute;left:28px;top:348px;font:500 23px 'Noto Sans KR',sans-serif;
-    color:rgba(255,243,220,.55);letter-spacing:.02em;white-space:nowrap}
+  /* logo */
+  .logo{position:absolute;left:30px;top:62px;display:flex;align-items:center;gap:34px}
+  .tile{width:156px;height:156px;border-radius:44px;background:var(--blue);display:grid;place-items:center}
+  .tile svg{width:104px;height:104px}
+  .word{font:800 164px/1 'Outfit',sans-serif;letter-spacing:-.035em;white-space:nowrap}
+  .word span{color:#8fb3dc}
+  .kr{position:absolute;left:34px;top:262px;font:700 34px 'Noto Sans KR',sans-serif;letter-spacing:-.01em;white-space:nowrap}
+  .kr small{font:500 26px 'Outfit',sans-serif;color:var(--ink2);letter-spacing:.06em;margin-left:14px}
+  .tag{position:absolute;left:34px;top:322px;font:500 28px 'Noto Sans KR',sans-serif;color:var(--ink2);white-space:nowrap}
 
-  /* ---------- right: SPOCAST card ---------- */
-  .card{position:absolute;left:968px;top:36px;width:540px;height:262px;background:var(--mustard);
-    border-radius:22px;transform:rotate(-2.2deg);color:var(--navy);
-    box-shadow:0 22px 0 -6px rgba(0,0,0,.28), 0 30px 60px rgba(0,0,0,.35)}
-  .tape{position:absolute;top:-18px;left:50%;width:150px;height:38px;margin-left:-75px;
-    background:rgba(255,243,220,.75);transform:rotate(3deg);border-radius:3px}
-  .onair{position:absolute;left:34px;top:32px;display:flex;gap:10px;align-items:center}
-  .pill{font:700 17px 'JetBrains Mono',monospace;letter-spacing:.12em;padding:7px 13px;border-radius:999px}
-  .pill.red{background:var(--navy);color:var(--cream);display:flex;align-items:center;gap:9px}
-  .pill.red i{width:10px;height:10px;border-radius:50%;background:var(--red);display:block;
-    box-shadow:0 0 10px var(--red)}
-  .pill.line{border:2.5px solid var(--navy);padding:5px 12px}
-  .spocast{position:absolute;left:30px;top:96px;font:400 78px/1 'Archivo Black',sans-serif;letter-spacing:-.02em}
-  .cardsub{position:absolute;left:36px;top:196px;font:700 25px 'Noto Sans KR',sans-serif;letter-spacing:-.01em}
-  .mic{position:absolute;right:24px;top:70px;width:70px;height:100px}
+  /* SPOCAST card */
+  .card{position:absolute;left:952px;top:52px;width:560px;height:236px;border-radius:36px;background:var(--peach)}
+  .label{position:absolute;left:40px;top:36px;font:700 19px 'Outfit',sans-serif;letter-spacing:.2em;color:var(--ink);
+    display:flex;align-items:center;gap:10px}
+  .label i{width:10px;height:10px;border-radius:50%;background:#ff8a7a;display:block}
+  .spocast{position:absolute;left:36px;top:76px;font:800 92px/1 'Outfit',sans-serif;letter-spacing:-.03em}
+  .cardsub{position:absolute;left:40px;top:178px;font:500 24px 'Noto Sans KR',sans-serif;color:#5d5560}
+  .mic{position:absolute;right:40px;top:40px;width:64px;height:96px}
 
-  /* ---------- chips ---------- */
-  .chips{position:absolute;left:944px;top:330px;display:flex;gap:12px}
-  .chip{font:700 23px 'Noto Sans KR',sans-serif;color:var(--cream);padding:11px 22px;border-radius:999px;
-    border:2.5px solid rgba(255,243,220,.4);display:flex;align-items:center;gap:10px;white-space:nowrap}
-  .chip svg{width:22px;height:22px}
-  .chip.en{font-family:'Archivo Black',sans-serif;font-weight:400;letter-spacing:.02em}
+  .chips{position:absolute;left:952px;top:316px;display:flex;gap:12px}
+  .chip{font:700 23px 'Noto Sans KR',sans-serif;padding:13px 26px;border-radius:999px;white-space:nowrap}
+  .chip.en{font:700 23px 'Outfit',sans-serif;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -66,32 +47,35 @@
   <svg id="bg"></svg>
   <div class="band" id="band">
     <div class="content" id="content">
-      <div class="kicker"><i></i>SPORTS · TALK · ANALYSIS</div>
-      <div class="self">(자칭)</div>
-      <div class="title">방구석 <span class="hl">전문가</span></div>
-      <div class="tag">진지하게 <b>분석</b>하고, 편하게 <b>떠듭니다</b>.</div>
-      <div class="sub">소파에 누워서 보지만, 보는 눈은 진심입니다</div>
+      <div class="logo">
+        <div class="tile">
+          <!-- minimal armchair -->
+          <svg viewBox="0 0 64 64" fill="none" stroke="#2f3347" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 31 V22 a9 9 0 0 1 9 -9 h16 a9 9 0 0 1 9 9 V31"/>
+            <path d="M9 45 V35 a5 5 0 0 1 10 0 V39 H45 V35 a5 5 0 0 1 10 0 V45 Z"/>
+            <path d="M15 45 V51 M49 45 V51"/>
+          </svg>
+        </div>
+        <div class="word">AC <span>PRO</span></div>
+      </div>
+      <div class="kr">방구석 전문가<small>ARMCHAIR PRO</small></div>
+      <div class="tag">진지하게 분석하고, 편하게 떠듭니다.</div>
 
       <div class="card">
-        <div class="tape"></div>
-        <div class="onair"><span class="pill red"><i></i>ON AIR</span><span class="pill line">MAIN SHOW</span></div>
-        <svg class="mic" viewBox="0 0 92 132">
-          <rect x="26" y="4" width="40" height="66" rx="20" fill="#0f1a30"/>
-          <g stroke="#f4b840" stroke-width="3" stroke-linecap="round">
-            <line x1="34" y1="20" x2="58" y2="20"/><line x1="34" y1="30" x2="58" y2="30"/><line x1="34" y1="40" x2="58" y2="40"/>
-          </g>
-          <path d="M12 46 C 12 92, 80 92, 80 46" fill="none" stroke="#0f1a30" stroke-width="7" stroke-linecap="round"/>
-          <line x1="46" y1="86" x2="46" y2="114" stroke="#0f1a30" stroke-width="7"/>
-          <line x1="24" y1="122" x2="68" y2="122" stroke="#0f1a30" stroke-width="8" stroke-linecap="round"/>
+        <div class="label"><i></i>MAIN SHOW</div>
+        <svg class="mic" viewBox="0 0 64 96" fill="none" stroke="#2f3347" stroke-width="4.4" stroke-linecap="round">
+          <rect x="20" y="4" width="24" height="44" rx="12"/>
+          <path d="M8 36 C 8 66, 56 66, 56 36"/>
+          <path d="M32 62 V80 M20 86 H44"/>
         </svg>
         <div class="spocast">SPOCAST</div>
         <div class="cardsub">스포츠 이야기, 방구석에서 제대로.</div>
       </div>
 
       <div class="chips">
-        <div class="chip"><svg viewBox="0 0 22 22"><g fill="#f4b840"><rect x="2" y="12" width="4" height="8" rx="1"/><rect x="9" y="7" width="4" height="13" rx="1"/><rect x="16" y="2" width="4" height="18" rx="1"/></g></svg>스포츠 분석</div>
-        <div class="chip en"><svg viewBox="0 0 22 22"><path d="M2 14 C 6 4, 10 4, 11 11 S 16 18, 20 8" fill="none" stroke="#f4b840" stroke-width="3" stroke-linecap="round"/></svg>SPOFLOW</div>
-        <div class="chip"><svg viewBox="0 0 22 22"><rect x="2" y="6" width="18" height="13" rx="3" fill="none" stroke="#f4b840" stroke-width="2.6"/><circle cx="11" cy="12.5" r="3.4" fill="#f4b840"/><rect x="7" y="3" width="8" height="4" rx="1" fill="#f4b840"/></svg>브이로그</div>
+        <div class="chip" style="background:var(--mint)">스포츠 분석</div>
+        <div class="chip en" style="background:var(--lav)">SPOFLOW</div>
+        <div class="chip" style="background:var(--butter)">브이로그</div>
       </div>
     </div>
   </div>
@@ -99,17 +83,15 @@
 
 <script>
 const PRESETS = {
-  // YouTube: 2560x1440, everything important inside the 1546x423 centre (visible on every device)
+  // YouTube: 2560x1440, key content inside the centre 1546x423
   youtube: {W:2560, H:1440, band:{x:507, y:508, w:1546, h:423}, scale:1},
-  // CHZZK: 1920x480, key info in the centre 1200x480
+  // CHZZK: 1920x480, key content inside the centre 1200x480
   chzzk:   {W:1920, H:480,  band:{x:360, y:0, w:1200, h:480}, scale:1200/1546}
 };
 const key = new URLSearchParams(location.search).get('size') || 'youtube';
 const P = PRESETS[key];
 const stage = document.getElementById('stage');
 stage.style.width = P.W+'px'; stage.style.height = P.H+'px';
-
-// content box: scaled to band width, vertically centred in band
 const cw = 1546*P.scale, ch = 423*P.scale;
 const band = document.getElementById('band');
 band.style.left = (P.band.x + (P.band.w-cw)/2)+'px';
@@ -117,100 +99,28 @@ band.style.top  = (P.band.y + (P.band.h-ch)/2)+'px';
 band.style.width = cw+'px'; band.style.height = ch+'px';
 document.getElementById('content').style.transform = `scale(${P.scale})`;
 
-// ---------- background ----------
+// soft pastel blobs, kept away from the text
 const {W,H} = P;
-const midY = P.band.y + P.band.h/2;          // vertical centre of the visible strip
-const s = key==='youtube' ? 1 : 0.92;        // decoration scale
-const chalk = 'rgba(255,243,220,.22)';
-
-// floor lamp, left of the safe area (shows on desktop/TV, not essential)
-function lamp(x, baseY){
-  const k=s, top = baseY - 420*k;
-  return `
-  <g>
-    <line x1="${x}" y1="${baseY}" x2="${x}" y2="${top+40*k}" stroke="#0b1324" stroke-width="${9*k}" stroke-linecap="round"/>
-    <path d="M${x} ${top+40*k} Q ${x+20*k} ${top-30*k} ${x+120*k} ${top-10*k}" fill="none" stroke="#0b1324" stroke-width="${8*k}" stroke-linecap="round"/>
-    <ellipse cx="${x}" cy="${baseY}" rx="${60*k}" ry="${12*k}" fill="#0b1324"/>
-    <path d="M${x+70*k} ${top-24*k} L ${x+170*k} ${top-24*k} L ${x+200*k} ${top+50*k} L ${x+40*k} ${top+50*k} Z" fill="#f4b840"/>
-    <path d="M${x+40*k} ${top+50*k} L ${x+200*k} ${top+50*k}" stroke="#ffd98a" stroke-width="${6*k}"/>
-  </g>`;
-}
-// small plant
-function plant(x, baseY){
-  const k=s;
-  return `
-  <g>
-    <path d="M${x-38*k} ${baseY-70*k} L ${x+38*k} ${baseY-70*k} L ${x+28*k} ${baseY} L ${x-28*k} ${baseY} Z" fill="#c4572e"/>
-    <rect x="${x-44*k}" y="${baseY-82*k}" width="${88*k}" height="${16*k}" rx="${4*k}" fill="#d9683a"/>
-    <g fill="#2f6b4f">
-      <path d="M${x} ${baseY-82*k} C ${x-70*k} ${baseY-130*k}, ${x-60*k} ${baseY-210*k}, ${x-10*k} ${baseY-230*k} C ${x-20*k} ${baseY-170*k}, ${x-5*k} ${baseY-120*k}, ${x} ${baseY-82*k} Z"/>
-      <path d="M${x} ${baseY-82*k} C ${x+70*k} ${baseY-120*k}, ${x+80*k} ${baseY-190*k}, ${x+40*k} ${baseY-215*k} C ${x+40*k} ${baseY-160*k}, ${x+15*k} ${baseY-120*k}, ${x} ${baseY-82*k} Z" fill="#3b8460"/>
-      <path d="M${x} ${baseY-82*k} C ${x-10*k} ${baseY-180*k}, ${x+10*k} ${baseY-250*k}, ${x+15*k} ${baseY-280*k} C ${x+30*k} ${baseY-220*k}, ${x+20*k} ${baseY-140*k}, ${x} ${baseY-82*k} Z" fill="#26593f"/>
-    </g>
-  </g>`;
-}
-// chalk tactics on the right wall
-function tactics(cx, cy){
-  const k=s*1.0;
-  const X=(x,y)=>`<g stroke="${chalk}" stroke-width="${6*k}" stroke-linecap="round"><line x1="${cx+(x-16)*k}" y1="${cy+(y-16)*k}" x2="${cx+(x+16)*k}" y2="${cy+(y+16)*k}"/><line x1="${cx+(x+16)*k}" y1="${cy+(y-16)*k}" x2="${cx+(x-16)*k}" y2="${cy+(y+16)*k}"/></g>`;
-  const O=(x,y)=>`<circle cx="${cx+x*k}" cy="${cy+y*k}" r="${18*k}" fill="none" stroke="${chalk}" stroke-width="${6*k}"/>`;
-  return `
-   ${O(-120,-110)}${O(-150,40)}${O(20,120)}
-   ${X(60,-140)}${X(130,10)}${X(-20,-10)}
-   <path d="M${cx-120*k} ${cy-85*k} C ${cx-90*k} ${cy-20*k}, ${cx-40*k} ${cy+20*k}, ${cx+10*k} ${cy+70*k}" fill="none" stroke="${chalk}" stroke-width="${5*k}" stroke-dasharray="${14*k} ${12*k}" stroke-linecap="round"/>
-   <path d="M${cx-4*k} ${cy+52*k} L ${cx+14*k} ${cy+76*k} L ${cx-16*k} ${cy+80*k}" fill="none" stroke="${chalk}" stroke-width="${5*k}" stroke-linecap="round" stroke-linejoin="round"/>
-   <path d="M${cx-150*k} ${cy+15*k} C ${cx-60*k} ${cy-60*k}, ${cx+20*k} ${cy-120*k}, ${cx+130*k} ${cy-110*k}" fill="none" stroke="${chalk}" stroke-width="${5*k}" stroke-linecap="round"/>
-   <path d="M${cx+108*k} ${cy-124*k} L ${cx+134*k} ${cy-110*k} L ${cx+110*k} ${cy-92*k}" fill="none" stroke="${chalk}" stroke-width="${5*k}" stroke-linecap="round" stroke-linejoin="round"/>`;
-}
-
-const floorY = key==='youtube' ? 1160 : H+40;   // floor only matters on TV view
-const lampBase = key==='youtube' ? 1000 : H-14;
-const leftX  = key==='youtube' ? 250 : 150;
-const rightX = key==='youtube' ? 2300 : 1760;
-
-document.getElementById('bg').setAttribute('viewBox',`0 0 ${W} ${H}`);
-document.getElementById('bg').setAttribute('width',W);
-document.getElementById('bg').setAttribute('height',H);
-document.getElementById('bg').innerHTML = `
+const my = P.band.y + P.band.h/2;
+const s = key==='youtube' ? 1 : 0.8;
+const blob = (cx,cy,r,c,o)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${c}" opacity="${o}"/>`;
+const bg = document.getElementById('bg');
+bg.setAttribute('viewBox',`0 0 ${W} ${H}`); bg.setAttribute('width',W); bg.setAttribute('height',H);
+bg.innerHTML = `
   <defs>
-    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1d2d4f"/><stop offset="1" stop-color="#121c33"/>
-    </linearGradient>
-    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#ffb84d" stop-opacity=".42"/>
-      <stop offset=".55" stop-color="#ff9a3c" stop-opacity=".12"/>
-      <stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="glow2" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#4f7cff" stop-opacity=".18"/>
-      <stop offset="1" stop-color="#4f7cff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="dots" width="${34*s}" height="${34*s}" patternUnits="userSpaceOnUse">
-      <circle cx="${17*s}" cy="${17*s}" r="${2*s}" fill="#fff3dc" opacity=".07"/>
-    </pattern>
-    <pattern id="planks" width="320" height="70" patternUnits="userSpaceOnUse">
-      <rect width="320" height="70" fill="#3a2719"/>
-      <line x1="0" y1="69" x2="320" y2="69" stroke="#2a1c12" stroke-width="3"/>
-      <line x1="200" y1="0" x2="200" y2="70" stroke="#2a1c12" stroke-width="3"/>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${60*s}"/></filter>
+    <pattern id="dots" width="${40*s}" height="${40*s}" patternUnits="userSpaceOnUse">
+      <circle cx="${20*s}" cy="${20*s}" r="${1.8*s}" fill="#2f3347" opacity=".07"/>
     </pattern>
   </defs>
-  <rect width="${W}" height="${H}" fill="url(#wall)"/>
   <rect width="${W}" height="${H}" fill="url(#dots)"/>
-  <!-- faint half-court lines: the "expert" layer -->
-  <g fill="none" stroke="#fff3dc" stroke-opacity=".05" stroke-width="${6*s}">
-    <circle cx="${W/2}" cy="${midY}" r="${H*0.9 > 900 ? 640 : 300}"/>
-    <line x1="${W/2}" y1="0" x2="${W/2}" y2="${H}"/>
+  <g filter="url(#soft)">
+    ${blob(P.band.x-150*s, my-60*s, 260*s, '#ffd9c7', .9)}
+    ${blob(P.band.x+P.band.w+170*s, my+40*s, 280*s, '#cfe0f3', .95)}
+    ${blob(P.band.x-60*s, my+260*s, 200*s, '#cdebdc', .9)}
+    ${blob(P.band.x+P.band.w+60*s, my-260*s, 180*s, '#fff0b8', .9)}
+    ${blob(P.band.x+P.band.w*0.55, my+330*s, 160*s, '#dfd6f3', .8)}
   </g>
-  <ellipse cx="${leftX+150*s}" cy="${lampBase-340*s}" rx="${620*s}" ry="${460*s}" fill="url(#glow)"/>
-  <ellipse cx="${rightX}" cy="${midY}" rx="${520*s}" ry="${380*s}" fill="url(#glow2)"/>
-  ${tactics(rightX, midY)}
-  ${key==='youtube' ? `
-    <rect x="0" y="${floorY-16}" width="${W}" height="18" fill="#0b1324"/>
-    <rect x="0" y="${floorY}" width="${W}" height="${H-floorY}" fill="url(#planks)"/>
-    <ellipse cx="${W/2}" cy="${floorY+120}" rx="760" ry="70" fill="#c4572e" opacity=".55"/>
-  ` : ''}
-  ${lamp(leftX, lampBase)}
-  ${plant(leftX + (key==='youtube'?-120:-90), lampBase)}
 `;
 window.__ready = document.fonts.ready.then(()=>true);
 </script>

@@ -13,6 +13,6 @@ const path = require('path');
   };
   await shoot('#badge', 'watermark_youtube_600x600.png', 1);
   await shoot('#badge', 'watermark_youtube_150x150.png', 0.25);
-  await shoot('#text', 'watermark_text_1200x420.png', 1);
+  await shoot('#text', 'watermark_text_1000x320.png', 1);
   await browser.close();
 })();
