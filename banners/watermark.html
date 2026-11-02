@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>방구석 전문가 워터마크</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Pen+Script&display=block" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:transparent}
+  .wm{position:relative;width:600px;height:600px}
+  /* badge: YouTube "branding watermark" (square, shown small in the video corner) */
+  .badge{position:absolute;inset:18px;border-radius:50%;background:#f4b840;
+    border:22px solid #15213b;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .badge .l1,.badge .l2{font:400 150px/0.98 'Black Han Sans',sans-serif;color:#15213b;letter-spacing:-.02em}
+  .badge .l2{position:relative;z-index:0}
+  .badge .l2::before{content:"";position:absolute;left:-8px;right:-8px;bottom:14px;height:42px;
+    background:#ff6b35;z-index:-1;transform:rotate(-1.5deg);border-radius:6px 14px 8px 18px}
+  /* text-only: transparent overlay for your own video edits */
+  .text{width:1200px;height:420px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding-left:40px}
+  .text .t{font:400 200px/1 'Black Han Sans',sans-serif;color:#fff3dc;white-space:nowrap;
+    -webkit-text-stroke:14px #15213b;paint-order:stroke fill;position:relative}
+  .text .s{font:400 92px/1 'Nanum Pen Script',cursive;color:#f4b840;margin:6px 0 0 14px;
+    -webkit-text-stroke:10px #15213b;paint-order:stroke fill}
+</style>
+</head>
+<body>
+  <div class="wm" id="badge"><div class="badge"><div class="l1">방구석</div><div class="l2">전문가</div></div></div>
+  <div class="text" id="text"><div class="t">방구석 전문가</div><div class="s">진지하게 분석하고, 편하게 떠듭니다</div></div>
+<script>window.__ready = document.fonts.ready.then(()=>true);</script>
+</body>
+</html>
