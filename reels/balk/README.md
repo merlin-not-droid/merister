@@ -8,6 +8,7 @@ SPOMOgrp 인스타그램 릴스 영상을 만드는 프롬프트입니다. 주�
 | 제목 | 공도 안 던졌는데 왜 진루해? |
 | 캐릭터 | SPO 펭귄즈 |
 | 포맷 | 세로 9:16 · 1080×1920 · 30fps · 약 58초 |
+| 완성본 | [`spomo_balk_reel.mp4`](spomo_balk_reel.mp4) · 커버 [`spomo_balk_cover.png`](spomo_balk_cover.png) · 제작 방법 [`video/`](video/README.md) |
 
 ## 0. 사용법
 
